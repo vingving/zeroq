@@ -49,8 +49,8 @@ class output_hook(object):
     def clear(self):
         self.outputs = None
 
-
 def getDistilData(teacher_model,
+                  distill_size,
                   dataset,
                   batch_size,
                   num_batch=1,
@@ -68,6 +68,7 @@ def getDistilData(teacher_model,
 
     # initialize distilled data with random noise according to the dataset
     dataloader = getRandomData(dataset=dataset,
+                               distill_size=distill_size,
                                batch_size=batch_size,
                                for_inception=for_inception)
 
@@ -98,8 +99,8 @@ def getDistilData(teacher_model,
     assert len(hooks) == len(bn_stats)
 
     for i, gaussian_data in enumerate(dataloader):
-        if i == num_batch:
-            break
+        # if i == num_batch:
+        #     break
         # initialize the criterion, optimizer, and scheduler
         gaussian_data = gaussian_data.cuda()
         gaussian_data.requires_grad = True

@@ -48,16 +48,21 @@ def test(model, test_loader):
     return acc
 
 
-def update(quantized_model, distilD):
+def update(quantized_model, distilD, update_single_batch=False):
     """
     Update activation range according to distilled data
     quantized_model: a quantized model whose activation range to be updated 
     distilD: distilled data
     """
     with torch.no_grad():
+        cnt = 0
         for batch_idx, inputs in enumerate(distilD):
             if isinstance(inputs, list):
                 inputs = inputs[0]
             inputs = inputs.cuda()
+            cnt += inputs.size(0)
+            if update_single_batch:
+                break
             outputs = quantized_model(inputs)
+    print('used {}'.format(cnt))
     return quantized_model

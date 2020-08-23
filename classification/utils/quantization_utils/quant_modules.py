@@ -43,6 +43,7 @@ class QuantAct(Module):
         running_stat: determines whether the activation range is updated or froze
         """
         super(QuantAct, self).__init__()
+        # print('activation_bit: {}'.format(activation_bit))
         self.activation_bit = activation_bit
         self.momentum = 0.99
         self.full_precision_flag = full_precision_flag
@@ -75,8 +76,7 @@ class QuantAct(Module):
             self.x_max += -self.x_max + max(self.x_max, x_max)
 
         if not self.full_precision_flag:
-            quant_act = self.act_function(x, self.activation_bit, self.x_min,
-                                          self.x_max)
+            quant_act = self.act_function(x, self.activation_bit, self.x_min, self.x_max)
             return quant_act
         else:
             return x
@@ -93,6 +93,7 @@ class Quant_Linear(Module):
         running_stat: determines whether the activation range is updated or froze
         """
         super(Quant_Linear, self).__init__()
+        # print('weight_bit: {}'.format(weight_bit))
         self.full_precision_flag = full_precision_flag
         self.weight_bit = weight_bit
         self.weight_function = AsymmetricQuantFunction.apply
@@ -121,8 +122,7 @@ class Quant_Linear(Module):
         w_min = x_transform.min(dim=1).values
         w_max = x_transform.max(dim=1).values
         if not self.full_precision_flag:
-            w = self.weight_function(self.weight, self.weight_bit, w_min,
-                                     w_max)
+            w = self.weight_function(self.weight, self.weight_bit, w_min, w_max)
         else:
             w = self.weight
         return F.linear(x, weight=w, bias=self.bias)
@@ -134,6 +134,7 @@ class Quant_Conv2d(Module):
     """
     def __init__(self, weight_bit, full_precision_flag=False):
         super(Quant_Conv2d, self).__init__()
+        # print('weight_bit: {}'.format(weight_bit))
         self.full_precision_flag = full_precision_flag
         self.weight_bit = weight_bit
         self.weight_function = AsymmetricQuantFunction.apply
@@ -166,9 +167,12 @@ class Quant_Conv2d(Module):
         x_transform = w.data.contiguous().view(self.out_channels, -1)
         w_min = x_transform.min(dim=1).values
         w_max = x_transform.max(dim=1).values
+        # w_avg = x_transform.mean(dim=1)
+        # w_std = x_transform.std(dim=1)
+        # w_min = w_avg - 3.*w_std
+        # w_max = w_avg + 3.*w_std
         if not self.full_precision_flag:
-            w = self.weight_function(self.weight, self.weight_bit, w_min,
-                                     w_max)
+            w = self.weight_function(self.weight, self.weight_bit, w_min, w_max)
         else:
             w = self.weight
 

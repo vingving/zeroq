@@ -123,8 +123,8 @@ class AsymmetricQuantFunction(Function):
         if x_min is None or x_max is None or (sum(x_min == x_max) == 1
                                               and x_min.numel() == 1):
             x_min, x_max = x.min(), x.max()
-        scale, zero_point = asymmetric_linear_quantization_params(
-            k, x_min, x_max)
+        scale, zero_point = asymmetric_linear_quantization_params(k, x_min, x_max)
+        # print('x_min: {}, x_max:{}, bit:{}, scale:{}, zeropoint:{}'.format(x_min, x_max, k, scale, zero_point))
         new_quant_x = linear_quantize(x, scale, zero_point, inplace=False)
         n = 2**(k - 1)
         new_quant_x = torch.clamp(new_quant_x, -n, n - 1)
