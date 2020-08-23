@@ -134,7 +134,8 @@ def getTrainData(dataset='imagenet',
             path + 'train',
             transforms.Compose([
                 transforms.Resize(int(input_size / 0.875)),
-                transforms.CenterCrop(input_size),
+                transforms.RandomCrop(input_size),
+                transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
                 normalize,
             ]))

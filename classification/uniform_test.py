@@ -58,7 +58,7 @@ def arg_parse():
     parser.add_argument('--activation-bit', type=int, default=4)
     parser.add_argument('--datatype', default='true_data',
                         choices=['distill', 'true_data', 'random_data'])
-    parser.add_argument('--distill-size', default=1)
+    parser.add_argument('--distill-size', type=int, default=1)
     args = parser.parse_args()
     return args
 
