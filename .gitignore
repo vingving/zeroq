@@ -1,0 +1,4 @@
+.idea/
+*.memo
+*.pyc
+nohup.out
