@@ -68,7 +68,7 @@ def getDistilData(teacher_model,
 
     # initialize distilled data with random noise according to the dataset
     dataloader = getRandomData(dataset=dataset,
-                               distill_size=distill_size,
+                               distill_size=32,
                                batch_size=batch_size,
                                for_inception=for_inception)
 

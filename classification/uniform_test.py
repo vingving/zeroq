@@ -55,8 +55,8 @@ def arg_parse():
                         default=128,
                         help='batch size of test data')
     parser.add_argument('--weight-bit', type=int, default=8)
-    parser.add_argument('--activation-bit', type=int, default=4)
-    parser.add_argument('--datatype', default='true_data',
+    parser.add_argument('--activation-bit', type=int, default=8)
+    parser.add_argument('--datatype', default='distill',
                         choices=['distill', 'true_data', 'random_data'])
     parser.add_argument('--distill-size', type=int, default=1)
     args = parser.parse_args()

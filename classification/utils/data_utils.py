@@ -97,7 +97,7 @@ def getTestData(dataset='imagenet',
         test_loader = DataLoader(test_dataset,
                                  batch_size=batch_size,
                                  shuffle=False,
-                                 num_workers=32)
+                                 num_workers=4)
         return test_loader
     elif dataset == 'cifar10':
         data_dir = '/rscratch/yaohuic/data/'
@@ -111,7 +111,7 @@ def getTestData(dataset='imagenet',
         test_loader = DataLoader(test_dataset,
                                  batch_size=batch_size,
                                  shuffle=False,
-                                 num_workers=32)
+                                 num_workers=4)
         return test_loader
 
 
@@ -142,7 +142,7 @@ def getTrainData(dataset='imagenet',
         test_loader = DataLoader(test_dataset,
                                  batch_size=batch_size,
                                  shuffle=True,
-                                 num_workers=32)
+                                 num_workers=4)
         return test_loader
     elif dataset == 'cifar10':
         data_dir = '/rscratch/yaohuic/data/'
@@ -156,5 +156,5 @@ def getTrainData(dataset='imagenet',
         test_loader = DataLoader(test_dataset,
                                  batch_size=batch_size,
                                  shuffle=True,
-                                 num_workers=32)
+                                 num_workers=4)
         return test_loader
