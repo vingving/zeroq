@@ -1,4 +1,6 @@
 .idea/
 *.memo
 *.pyc
+*.log
+*.txt
 nohup.out

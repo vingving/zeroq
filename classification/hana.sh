@@ -1,4 +1,4 @@
-for w in 8 4 2
+for w in 2
 do
 for a in 8 4 2
 do
@@ -9,7 +9,7 @@ do
 	
 	echo "EVAL" $w $a $d $s
 
-	cmd="CUDA_VISIBLE_DEVICES='1' python uniform_test.py --weight-bit $w --activation-bit $a --datatype $d --distill-size $s"
+	cmd="CUDA_VISIBLE_DEVICES='0' python uniform_test.py --weight-bit $w --activation-bit $a --datatype $d --distill-size $s"
 	echo $cmd | bash
 
 done

@@ -61,8 +61,8 @@ def update(quantized_model, distilD, update_single_batch=False):
                 inputs = inputs[0]
             inputs = inputs.cuda()
             cnt += inputs.size(0)
+            outputs = quantized_model(inputs)
             if update_single_batch:
                 break
-            outputs = quantized_model(inputs)
     print('used {}'.format(cnt))
     return quantized_model
