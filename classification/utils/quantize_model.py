@@ -74,6 +74,43 @@ def quantize_model(model, weight_bit, activation_bit):
         return q_model
 
 
+
+def dequantize_model(model):
+    """
+    Recursively quantize a pretrained single-precision model to int8 quantized model
+    model: pretrained single-precision model
+    """
+
+    # quantize convolutional and linear layers to 8-bit
+    if type(model) == Quant_Conv2d:
+        quant_mod = nn.Conv2d(model.in_channels, model.out_channels, model.kernel_size, model.stride,
+                              model.padding, model.dilation, model.groups)
+        quant_mod.weight.data = model.sweight.data
+        return quant_mod
+    elif type(model) == Quant_Linear:
+        quant_mod = nn.Linear(model.in_features, model.out_features)
+        quant_mod.weight.data = model.sweight.data
+        return quant_mod
+
+    # quantize all the activation to 8-bit
+    elif type(model) == QuantAct:
+        return nn.Sequential(*[model, nn.ReLU()])
+
+    # recursively use the quantized module to replace the single-precision module
+    elif type(model) == nn.Sequential:
+        mods = []
+        for n, m in model.named_children():
+            mods.append(dequantize_model(m))
+        return nn.Sequential(*mods)
+    else:
+        q_model = copy.deepcopy(model)
+        for attr in dir(model):
+            mod = getattr(model, attr)
+            if isinstance(mod, nn.Module) and 'norm' not in attr:
+                # print(attr)
+                setattr(q_model, attr, dequantize_model(mod))
+        return q_model
+
 def freeze_model(model):
     """
     freeze the activation range

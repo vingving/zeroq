@@ -20,12 +20,17 @@
 
 import argparse
 import torch
+import torchvision.models as models
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 from pytorchcv.model_provider import get_model as ptcv_get_model
 from utils import *
 from distill_data import *
+# import os
+# os.environ["CUDA_VISIBLE_DEVICES"]="1"
+# gg = torch.load('/home/com26/qf_w8a8model.pth')
+# torch.save(gg.state_dict(), 'w8a8model.pth')
 
 
 # model settings
@@ -76,7 +81,9 @@ if __name__ == '__main__':
     torch.backends.cudnn.benchmark = True
 
     # Load pretrained model
-    model = ptcv_get_model(args.model, pretrained=True)
+    # model = ptcv_get_model(args.model, pretrained=True)
+    model = models.resnet18(pretrained=True)
+    # model = models.mobilenet_v2(pretrained=True)
     print('****** Full precision model loaded ******')
 
     # Load validation data
@@ -122,25 +129,22 @@ if __name__ == '__main__':
         raise NotImplementedError
     print('****** Zero Shot Quantization Finished ******')
 
-    # for epoch in range(args.epochs):
-    #     train_loss, train_acc1 = train(epoch)
-    #     test_loss, test_acc1 = test(epoch)
-    #
-    #     if not args.lr_batch_adj:
-    #         lr_scheduler.step()
-
-
-
     # Freeze activation range during test
     freeze_model(quantized_model)
     # quantized_model = nn.DataParallel(quantized_model).cuda()
 
+    qf_model = dequantize_model(quantized_model)
+    qf_model.cuda()
+    torch.save(qf_model.state_dict(), 'resnet18_qf_w8a8model.pth')
+    # torch.save(qf_model.state_dict(), 'mobilenetv2_qf_w8a8model.pth')
+
     # Test the final quantized model
     # test(model, test_loader)
-    test(quantized_model, test_loader)
+    # test(quantized_model, test_loader)
+    # test(qf_model, test_loader)
 
-
+    #
     # Calculate the sensitivity (kl-divergence) between model and quantized model
     # calc_sensitivity(model, quantized_model, visualize=True)
 
-
+    print('ended')

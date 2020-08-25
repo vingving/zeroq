@@ -123,6 +123,7 @@ class Quant_Linear(Module):
         w_max = x_transform.max(dim=1).values
         if not self.full_precision_flag:
             w = self.weight_function(self.weight, self.weight_bit, w_min, w_max)
+            self.sweight = w
         else:
             w = self.weight
         return F.linear(x, weight=w, bias=self.bias)
@@ -167,12 +168,15 @@ class Quant_Conv2d(Module):
         x_transform = w.data.contiguous().view(self.out_channels, -1)
         w_min = x_transform.min(dim=1).values
         w_max = x_transform.max(dim=1).values
+        # print('conv1 {} {}'.format(w_min, w_max))
         # w_avg = x_transform.mean(dim=1)
         # w_std = x_transform.std(dim=1)
         # w_min = w_avg - 3.*w_std
         # w_max = w_avg + 3.*w_std
         if not self.full_precision_flag:
             w = self.weight_function(self.weight, self.weight_bit, w_min, w_max)
+            # print('conv2 {} {}'.format(w.min(), w.max()))
+            self.sweight = w
         else:
             w = self.weight
 
